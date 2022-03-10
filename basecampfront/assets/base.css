@@ -1,0 +1,152 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700&display=swap');
+
+* {
+  font-family: 'Roboto', sans-serif;
+  scrollbar-width: thin;
+}
+
+body {
+  background: #fff;
+}
+
+.bg-main {
+  background: #fff;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 5px;
+}
+
+.badge-danger {
+  background-color: #ea3943;
+}
+
+.badge-warning {
+  color: #fff;
+}
+
+.divider {
+  width: 100%;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.ttl-wrap {
+  height: 30px;
+  display: flex;
+  align-items: center;
+}
+
+.ttl-tasks {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: absolute;
+  width: 100%;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.main-btn {
+  border: 0;
+  white-space: nowrap;
+  margin-right: 4px;
+  background-color: rgb(240, 246, 255) !important;
+  color: rgb(56, 97, 251) !important;
+  -webkit-box-align: center;
+  align-items: center;
+  background: transparent;
+  border: 0px;
+  border-radius: 6px;
+  display: inline-flex;
+  color: rgb(0, 0, 0);
+  cursor: pointer;
+  -webkit-box-pack: center;
+  justify-content: center;
+  outline: 0px;
+  font-weight: 600;
+  width: 100%;
+  height: 32px;
+  font-size: 12px;
+  padding: 0px 16px;
+  line-height: 18px;
+}
+
+.modal-header,
+.card {
+  border: none;
+  box-shadow: rgb(128 138 157 / 8%) 0px 1px 2px, rgb(128 138 157 / 12%) 0px 4px 12px;
+}
+
+.modal-title {
+  font-size: 16px;
+}
+
+.form-group label {
+  font-size: 14px;
+}
+
+.form-control {
+  border: none;
+  box-shadow: rgb(128 138 157 / 8%) 0px 1px 2px, rgb(128 138 157 / 12%) 0px 4px 12px;
+}
+
+.form-control:focus {
+  box-shadow: none;
+  box-shadow: rgb(128 138 157 / 8%) 0px 1px 2px, rgb(128 138 157 / 12%) 0px 4px 12px;
+}
+
+.vs--searchable .vs__dropdown-toggle {
+  border: none;
+  box-shadow: rgb(128 138 157 / 8%) 0px 1px 2px, rgb(128 138 157 / 12%) 0px 4px 12px;
+}
+
+.vs__search::placeholder {
+  font-size: 14px;
+  color: rgb(112, 121, 129) !important;
+}
+
+.vs__dropdown-menu,
+.vs__selected {
+  font-size: 14px;
+}
+
+.form-group label {
+  border: none;
+  box-shadow: rgb(128 138 157 / 8%) 0px 1px 2px, rgb(128 138 157 / 12%) 0px 4px 12px;
+}
+
+.custom-file-input:focus ~ .custom-file-label {
+  box-shadow: rgb(128 138 157 / 8%) 0px 1px 2px, rgb(128 138 157 / 12%) 0px 4px 12px;
+}
+
+.b-custom-control-sm .custom-file-label::after {
+  height: 100% !important;
+  box-shadow: rgb(128 138 157 / 8%) 0px 1px 2px, rgb(128 138 157 / 12%) 0px 4px 12px !important;
+}
+
+.btn:focus,
+.btn:active {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.dragdrop {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  padding: 0 10px; 
+}
