@@ -1,4 +1,5 @@
-export default {
+require('dotenv').config()
+module.exports = {
   head: {
     title: 'Basecamp',
     htmlAttrs: {
@@ -29,7 +30,14 @@ export default {
 
   modules: [
     'bootstrap-vue/nuxt',
+    '@nuxtjs/dotenv',
+    '@nuxtjs/axios',
+    ['cookie-universal-nuxt', { alias: 'cookiz' }]
   ],
+
+  axios: {
+    apiURL: process.env.API_URL,
+  },
 
   build: {}
 }

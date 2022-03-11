@@ -49,6 +49,13 @@
                       </div>
                     </b-card>
                   </div>
+                  <div class="mt-5 mb-2">
+                    <b-card class="cursor-pointer">
+                      <div class="d-flex align-items-center" style="gap: 3px">
+                        <b-badge></b-badge>
+                      </div>
+                    </b-card>
+                  </div>
                 </draggable>
               </div>
               <div class="card-item">
@@ -85,6 +92,13 @@
                         >
                           {{ tag.name }}
                         </b-badge>
+                      </div>
+                    </b-card>
+                  </div>
+                  <div class="mt-5 mb-2">
+                    <b-card class="cursor-pointer">
+                      <div class="d-flex align-items-center" style="gap: 3px">
+                        <b-badge></b-badge>
                       </div>
                     </b-card>
                   </div>
@@ -127,6 +141,13 @@
                       </div>
                     </b-card>
                   </div>
+                  <div class="mt-5 mb-2">
+                    <b-card class="cursor-pointer">
+                      <div class="d-flex align-items-center" style="gap: 3px">
+                        <b-badge></b-badge>
+                      </div>
+                    </b-card>
+                  </div>
                 </draggable>
               </div>
               <div class="card-item">
@@ -163,6 +184,13 @@
                         >
                           {{ tag.name }}
                         </b-badge>
+                      </div>
+                    </b-card>
+                  </div>
+                  <div class="mt-5 mb-2">
+                    <b-card class="cursor-pointer">
+                      <div class="d-flex align-items-center" style="gap: 3px">
+                        <b-badge></b-badge>
                       </div>
                     </b-card>
                   </div>
@@ -205,6 +233,13 @@
                       </div>
                     </b-card>
                   </div>
+                  <div class="mt-5 mb-2">
+                    <b-card class="cursor-pointer">
+                      <div class="d-flex align-items-center" style="gap: 3px">
+                        <b-badge></b-badge>
+                      </div>
+                    </b-card>
+                  </div>
                 </draggable>
               </div>
               <div class="card-item">
@@ -238,6 +273,13 @@
                         >
                           {{ tag.name }}
                         </b-badge>
+                      </div>
+                    </b-card>
+                  </div>
+                  <div class="mt-5 mb-2">
+                    <b-card class="cursor-pointer">
+                      <div class="d-flex align-items-center" style="gap: 3px">
+                        <b-badge></b-badge>
                       </div>
                     </b-card>
                   </div>
@@ -339,6 +381,7 @@ export default {
   components: {
     draggable,
   },
+  middleware: 'auth',
   data() {
     return {
       title: null,
@@ -358,15 +401,15 @@ export default {
             { name: 'Priority', class: 'danger' },
           ]
         },
-        { id: 2, title: 'Todos 2', tags: [] },
-        { id: 3, title: 'Todos 3', tags: [] },
-        { id: 4, title: 'Todos 4', tags: [] },
-        { id: 5, title: 'Todos 5', tags: [] },
-        { id: 6, title: 'Todos 6', tags: [] },
+        { id: 2, title: 'Contrary to popular belief, Lorem Ipsum is not simply random text', tags: [] },
+        { id: 3, title: 'Contrary to popular belief, Lorem Ipsum is not simply random text', tags: [] },
+        { id: 4, title: 'Contrary to popular belief, Lorem Ipsum is not simply random text', tags: [] },
+        { id: 5, title: 'Contrary to popular belief, Lorem Ipsum is not simply random text', tags: [] },
+        { id: 6, title: 'Contrary to popular belief, Lorem Ipsum is not simply random text', tags: [] },
         { id: 7, title: 'Todos 7', tags: [] },
         { id: 8, title: 'Todos 8', tags: [] },
         { id: 9, title: 'Todos 9', tags: [] },
-        { id: 10, title: 'Todos 10', tags: [] },
+        { id: 10, title: 'Contrary to popular belief, Lorem Ipsum is not simply random text', tags: [] },
       ],
       iceboxs: [],
       backlogs: [],
