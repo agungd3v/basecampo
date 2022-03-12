@@ -22,6 +22,7 @@ module.exports = {
 
   plugins: [
     '~/plugins/vueSelect.js',
+    '~/plugins/bootstrapIcon.js',
     { src: '~plugins/axios', ssr: true },
     { src: '~plugins/localStorage', ssr: false }
   ],

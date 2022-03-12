@@ -154,3 +154,10 @@ body {
 .dragdrop div:last-child .card {
   box-shadow: none;
 }
+
+.mark-complete {
+  position: absolute;
+  z-index: 2;
+  top: 12px;
+  left: 10px;
+}

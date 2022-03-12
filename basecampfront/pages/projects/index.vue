@@ -27,6 +27,7 @@
                   :list="todos"
                   group="tasks"
                   class="dragdrop"
+                  @change="moveTodo"
                 >
                   <div
                     v-for="item in todos"
@@ -88,6 +89,7 @@
                   :list="iceboxs"
                   group="tasks"
                   class="dragdrop"
+                  @change="moveIcebox"
                 >
                   <div
                     v-for="item in iceboxs"
@@ -95,6 +97,21 @@
                     class="mt-1 mb-2"
                   >
                     <b-card :title="item.title" class="cursor-pointer">
+                      <div
+                        v-if="item.assign.length > 0"
+                      >
+                        <div class="d-flex align-items-center" style="gap: 3px">
+                          <b-avatar
+                            v-for="(a, ib) in item.assign"
+                            :key="ib"
+                            :text="getFirstChar(a.name)"
+                            v-b-tooltip.hover
+                            :title="a.name"
+                            variant="primary"
+                            size="1.5rem"
+                          ></b-avatar>
+                        </div>
+                      </div>
                       <div
                         v-if="item.tags"
                         class="d-flex align-items-center"
@@ -134,6 +151,7 @@
                   :list="backlogs"
                   group="tasks"
                   class="dragdrop"
+                  @change="moveBacklog"
                 >
                   <div
                     v-for="item in backlogs"
@@ -141,6 +159,21 @@
                     class="mt-1 mb-2"
                   >
                     <b-card :title="item.title" class="cursor-pointer">
+                      <div
+                        v-if="item.assign.length > 0"
+                      >
+                        <div class="d-flex align-items-center" style="gap: 3px">
+                          <b-avatar
+                            v-for="(a, ib) in item.assign"
+                            :key="ib"
+                            :text="getFirstChar(a.name)"
+                            v-b-tooltip.hover
+                            :title="a.name"
+                            variant="primary"
+                            size="1.5rem"
+                          ></b-avatar>
+                        </div>
+                      </div>
                       <div
                         v-if="item.tags"
                         class="d-flex align-items-center"
@@ -180,6 +213,7 @@
                   :list="progress"
                   group="tasks"
                   class="dragdrop"
+                  @change="moveProgress"
                 >
                   <div
                     v-for="item in progress"
@@ -187,6 +221,21 @@
                     class="mt-1 mb-2"
                   >
                     <b-card :title="item.title" class="cursor-pointer">
+                      <div
+                        v-if="item.assign.length > 0"
+                      >
+                        <div class="d-flex align-items-center" style="gap: 3px">
+                          <b-avatar
+                            v-for="(a, ib) in item.assign"
+                            :key="ib"
+                            :text="getFirstChar(a.name)"
+                            v-b-tooltip.hover
+                            :title="a.name"
+                            variant="primary"
+                            size="1.5rem"
+                          ></b-avatar>
+                        </div>
+                      </div>
                       <div
                         v-if="item.tags"
                         class="d-flex align-items-center"
@@ -226,6 +275,7 @@
                   :list="riviews"
                   group="tasks"
                   class="dragdrop"
+                  @change="moveRiview"
                 >
                   <div
                     v-for="item in riviews"
@@ -233,6 +283,21 @@
                     class="mt-1 mb-2"
                   >
                     <b-card :title="item.title" class="cursor-pointer">
+                      <div
+                        v-if="item.assign.length > 0"
+                      >
+                        <div class="d-flex align-items-center" style="gap: 3px">
+                          <b-avatar
+                            v-for="(a, ib) in item.assign"
+                            :key="ib"
+                            :text="getFirstChar(a.name)"
+                            v-b-tooltip.hover
+                            :title="a.name"
+                            variant="primary"
+                            size="1.5rem"
+                          ></b-avatar>
+                        </div>
+                      </div>
                       <div
                         v-if="item.tags"
                         class="d-flex align-items-center"
@@ -269,13 +334,36 @@
                   :list="completed"
                   group="tasks"
                   class="dragdrop"
+                  @change="moveComplete"
                 >
                   <div
                     v-for="item in completed"
                     :key="item.id"
                     class="mt-1 mb-2"
                   >
-                    <b-card :title="item.title" class="cursor-pointer">
+                    <b-card :title="item.title" class="cursor-pointer position-relative pl-3">
+                      <div class="mark-complete">
+                        <b-icon
+                          icon="check-square-fill"
+                          variant="success"
+                          font-scale="1.1"
+                        ></b-icon>
+                      </div>
+                      <div
+                        v-if="item.assign.length > 0"
+                      >
+                        <div class="d-flex align-items-center" style="gap: 3px">
+                          <b-avatar
+                            v-for="(a, ib) in item.assign"
+                            :key="ib"
+                            :text="getFirstChar(a.name)"
+                            v-b-tooltip.hover
+                            :title="a.name"
+                            variant="primary"
+                            size="1.5rem"
+                          ></b-avatar>
+                        </div>
+                      </div>
                       <div
                         v-if="item.tags"
                         class="d-flex align-items-center"
@@ -445,8 +533,12 @@ export default {
       try {
         const fetch = await this.$axios.$get('/v1/task')
         if (fetch.status) {
-          console.log(fetch.data)
           this.todos = fetch.data.filter(data => data.status == 1)
+          this.iceboxs = fetch.data.filter(data => data.status == 2)
+          this.backlogs = fetch.data.filter(data => data.status == 3)
+          this.progress = fetch.data.filter(data => data.status == 4)
+          this.riviews = fetch.data.filter(data => data.status == 5)
+          this.completed = fetch.data.filter(data => data.status == 6)
         }
       } catch (error) {
         throw error
@@ -511,6 +603,132 @@ export default {
     },
     getFirstChar(text) {
       return text.split('')[0].toUpperCase()
+    },
+    async moveTodo(data) {
+      if (data.added) {
+        try {
+          const store = await this.$axios.$post('/v1/task/change', {
+            task_id: data.added.element.id,
+            status: 1,
+          })
+          if (store.status) {
+            this.$bvToast.toast(`Task changes to todo`, {
+              title: `Info!`,
+              toaster: 'b-toaster-bottom-right',
+              solid: true,
+              variant: 'primary',
+              appendToast: true
+            })
+          }
+        } catch (error) {
+          throw error
+        }
+      }
+    },
+    async moveIcebox(data) {
+      if (data.added) {
+        try {
+          const store = await this.$axios.$post('/v1/task/change', {
+            task_id: data.added.element.id,
+            status: 2,
+          })
+          if (store.status) {
+            this.$bvToast.toast(`Task changes to icebox`, {
+              title: `Info!`,
+              toaster: 'b-toaster-bottom-right',
+              solid: true,
+              variant: 'info',
+              appendToast: true
+            })
+          }
+        } catch (error) {
+          throw error
+        }
+      }
+    },
+    async moveBacklog(data) {
+      if (data.added) {
+        try {
+          const store = await this.$axios.$post('/v1/task/change', {
+            task_id: data.added.element.id,
+            status: 3,
+          })
+          if (store.status) {
+            this.$bvToast.toast(`Task changes to backlog`, {
+              title: `Info!`,
+              toaster: 'b-toaster-bottom-right',
+              solid: true,
+              variant: 'warning',
+              appendToast: true
+            })
+          }
+        } catch (error) {
+          throw error
+        }
+      }
+    },
+    async moveProgress(data) {
+      if (data.added) {
+        try {
+          const store = await this.$axios.$post('/v1/task/change', {
+            task_id: data.added.element.id,
+            status: 4,
+          })
+          if (store.status) {
+            this.$bvToast.toast(`Task changes to progress`, {
+              title: `Info!`,
+              toaster: 'b-toaster-bottom-right',
+              solid: true,
+              variant: 'success',
+              appendToast: true
+            })
+          }
+        } catch (error) {
+          throw error
+        }
+      }
+    },
+    async moveRiview(data) {
+      if (data.added) {
+        try {
+          const store = await this.$axios.$post('/v1/task/change', {
+            task_id: data.added.element.id,
+            status: 5,
+          })
+          if (store.status) {
+            this.$bvToast.toast(`Task changes to riview`, {
+              title: `Info!`,
+              toaster: 'b-toaster-bottom-right',
+              solid: true,
+              variant: 'danger',
+              appendToast: true
+            })
+          }
+        } catch (error) {
+          throw error
+        }
+      }
+    },
+    async moveComplete(data) {
+      if (data.added) {
+        try {
+          const store = await this.$axios.$post('/v1/task/change', {
+            task_id: data.added.element.id,
+            status: 6,
+          })
+          if (store.status) {
+            this.$bvToast.toast(`Task complete`, {
+              title: `Info!`,
+              toaster: 'b-toaster-bottom-right',
+              solid: true,
+              variant: 'success',
+              appendToast: true
+            })
+          }
+        } catch (error) {
+          throw error
+        }
+      }
     }
   }
 }

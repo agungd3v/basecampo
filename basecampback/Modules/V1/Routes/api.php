@@ -24,5 +24,6 @@ Route::group(['prefix' => 'v1'], function() {
     Route::get('', [TaskController::class, 'getTask']);
     Route::post('', [TaskController::class, 'storeTask']);
     Route::post('user', [TaskController::class, 'getUserDivision']);
+    Route::post('change', [TaskController::class, 'changeTaskStatus']);
   });
 });

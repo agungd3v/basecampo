@@ -67,4 +67,32 @@ class TaskController extends Controller
       return $this->error();
     }
   }
+
+  public function changeTaskStatus(Request $request) {
+    $request->validate([
+      'task_id' => 'required',
+      'status' => 'required'
+    ]);
+    DB::beginTransaction();
+    try {
+      $task = Task::findOrFail($request->task_id);
+      $isAssign = $task->assign->where('id', Auth::user()->id)->first();
+      $isCreator = $task->created_by == Auth::user()->id;
+
+      if (!$isAssign && !$isCreator) {
+        throw new \Exception('Kamu tidak berpartisipasi dalam task ini');
+      }
+
+      $task->status = $request->status;
+      $task->save();
+
+      DB::commit();
+      $this->setData($task);
+      return $this->success();
+    } catch (\Exception $e) {
+      DB::rollBack();
+      $this->setMessage($e->getMessage());
+      return $this->error();
+    }
+  }
 }
