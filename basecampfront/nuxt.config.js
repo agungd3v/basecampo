@@ -21,19 +21,26 @@ module.exports = {
   ],
 
   plugins: [
-    '~/plugins/vueSelect.js'
+    '~/plugins/vueSelect.js',
+    { src: '~plugins/axios', ssr: true },
+    { src: '~plugins/localStorage', ssr: false }
   ],
 
   components: true,
 
-  buildModules: [],
+  buildModules: [
+    '@nuxtjs/dotenv',
+    '@nuxtjs/axios',
+  ],
 
   modules: [
     'bootstrap-vue/nuxt',
-    '@nuxtjs/dotenv',
-    '@nuxtjs/axios',
     ['cookie-universal-nuxt', { alias: 'cookiz' }]
   ],
+
+  router: {
+    middleware: ['init']
+  },
 
   axios: {
     apiURL: process.env.API_URL,

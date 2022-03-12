@@ -1,0 +1,70 @@
+<?php
+
+namespace Modules\V1\Http\Controllers;
+
+use App\Models\Task;
+use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Http\Request;
+use App\Traits\ResponseApi;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Modules\V1\Repository\GlobalRepository;
+
+class TaskController extends Controller
+{
+  use ResponseApi;
+  protected $repository;
+
+  public function __construct(GlobalRepository $globalRepo) {
+    $this->repository = $globalRepo;
+  }
+
+  public function getTask() {
+    try {
+      $this->setData(Task::with('assign')->get());
+      return $this->success();
+    } catch (\Exception $e) {
+      $this->setMessage($e->getMessage());
+      return $this->error();
+    }
+  }
+
+  public function storeTask(Request $request) {
+    $request->validate(['title' => 'required']);
+    DB::beginTransaction();
+    try {
+      $task = new Task();
+      $task->title = $request->title;
+      $task->created_by = Auth::user()->id;
+      $task->from_date = $request->from_date ?? NULL;
+      $task->to_date = $request->to_date ?? NULL;
+      $task->description = $request->description ?? NULL;
+      $task->save();
+
+      if ($request->assign) {
+        $task->assign()->attach($request->assign);
+      }
+
+      DB::commit();
+      $this->setData($task);
+      return $this->success();
+    } catch (\Exception $e) {
+      DB::rollBack();
+      $this->setMessage($e->getMessage());
+      return $this->error();
+    }
+  }
+
+  public function getUserDivision(Request $request) {
+    $request->validate(['division_id' => 'required']);
+    try {
+      $data = $this->repository->getUserIsSameDivison($request->division_id);
+      $this->setData($data);
+      return $this->success();
+    } catch (\Exception $e) {
+      $this->setMessage($e->getMessage());
+      return $this->error();
+    }
+  }
+}

@@ -35,6 +35,21 @@
                   >
                     <b-card :title="item.title" class="cursor-pointer">
                       <div
+                        v-if="item.assign.length > 0"
+                      >
+                        <div class="d-flex align-items-center" style="gap: 3px">
+                          <b-avatar
+                            v-for="(a, ib) in item.assign"
+                            :key="ib"
+                            :text="getFirstChar(a.name)"
+                            v-b-tooltip.hover
+                            :title="a.name"
+                            variant="primary"
+                            size="1.5rem"
+                          ></b-avatar>
+                        </div>
+                      </div>
+                      <div
                         v-if="item.tags"
                         class="d-flex align-items-center"
                         style="gap: 3px"
@@ -303,10 +318,7 @@
           <v-select
             multiple
             placeholder="Assign To"
-            :options="[
-              {value: '1', text: 'Agung Ardiyanto'},
-              {value: '2', text: 'Bunga Prameswari'}
-            ]"
+            :options="assign_list"
             label="text"
             v-model="assign"
           ></v-select>
@@ -320,6 +332,7 @@
             size="sm"
             v-model="title"
             :state="titleState"
+            autocomplete="off"
             required
           ></b-form-input>
         </b-form-group>
@@ -331,6 +344,18 @@
             no-resize
             placeholder="Task description"
           ></b-form-textarea>
+        </b-form-group>
+        <b-form-group
+          label="Due Date"
+        >
+          <b-row>
+            <b-col md="6">
+              <b-form-datepicker v-model="from_date" size="sm"></b-form-datepicker>
+            </b-col>
+            <b-col md="6">
+              <b-form-datepicker v-model="to_date" size="sm"></b-form-datepicker>
+            </b-col>
+          </b-row>
         </b-form-group>
         <b-form-group>
           <v-select
@@ -368,7 +393,7 @@
             spinner-variant="primary"
             class="d-inline-block"
           >
-            <b-button style="width: 100px" variant="primary" size="sm">Submit</b-button>
+            <b-button style="width: 100px" @click.prevent="handleSubmit" variant="primary" size="sm">Submit</b-button>
           </b-overlay>
         </b-form-group>
       </form>
@@ -377,6 +402,7 @@
 </template>
 <script>
 import draggable from 'vuedraggable'
+import { mapGetters } from 'vuex'
 export default {
   components: {
     draggable,
@@ -391,26 +417,12 @@ export default {
       tags: null,
       images: null,
       submit: false,
+      from_date: null,
+      to_date: null,
 
-      todos: [
-        {
-          id: 1,
-          title: 'Contrary to popular belief, Lorem Ipsum is not simply random text',
-          tags: [
-            { name: 'Bug', class: 'warning' },
-            { name: 'Priority', class: 'danger' },
-          ]
-        },
-        { id: 2, title: 'Contrary to popular belief, Lorem Ipsum is not simply random text', tags: [] },
-        { id: 3, title: 'Contrary to popular belief, Lorem Ipsum is not simply random text', tags: [] },
-        { id: 4, title: 'Contrary to popular belief, Lorem Ipsum is not simply random text', tags: [] },
-        { id: 5, title: 'Contrary to popular belief, Lorem Ipsum is not simply random text', tags: [] },
-        { id: 6, title: 'Contrary to popular belief, Lorem Ipsum is not simply random text', tags: [] },
-        { id: 7, title: 'Todos 7', tags: [] },
-        { id: 8, title: 'Todos 8', tags: [] },
-        { id: 9, title: 'Todos 9', tags: [] },
-        { id: 10, title: 'Contrary to popular belief, Lorem Ipsum is not simply random text', tags: [] },
-      ],
+      assign_list: [],
+
+      todos: [],
       iceboxs: [],
       backlogs: [],
       progress: [],
@@ -419,14 +431,51 @@ export default {
     }
   },
   watch: {},
+  computed: {
+    ...mapGetters({
+      'user': 'user'
+    })
+  },
+  mounted() {
+    this.getTask()
+    this.getUserInDivision()
+  },
   methods: {
+    async getTask() {
+      try {
+        const fetch = await this.$axios.$get('/v1/task')
+        if (fetch.status) {
+          console.log(fetch.data)
+          this.todos = fetch.data.filter(data => data.status == 1)
+        }
+      } catch (error) {
+        throw error
+      }
+    },
+    async getUserInDivision() {
+      try {
+        const fetch = await this.$axios.$post('/v1/task/user', {
+          division_id: this.user.division_id
+        })
+        if (fetch.status) {
+          this.assign_list = fetch.data.map(data => {
+            return {
+              text: data.name,
+              value: data.id
+            }
+          })
+        }
+      } catch (error) {
+        throw error
+      }
+    },
     checkFormValidity() {
       const valid = this.$refs.form.checkValidity()
       this.titleState = valid
       return valid
     },
     resetModal() {
-      this.name = null
+      this.title = null
       this.titleState = null,
       this.description = null
       this.assign = null
@@ -435,18 +484,33 @@ export default {
       evt.preventDefault()
       this.handleSubmit()
     },
-    handleSubmit() {
+    async handleSubmit() {
       if (!this.checkFormValidity()) return
-      this.$bvToast.toast(`New task ${this.name} has been created`, {
-        title: `Info!`,
-        toaster: 'b-toaster-bottom-right',
-        solid: true,
-        variant: 'primary',
-        appendToast: true
-      })
-      this.$nextTick(() => {
-        this.$bvModal.hide('create-task')
-      })
+      try {
+        const store = await this.$axios.$post('/v1/task', {
+          title: this.title,
+          from_date: this.from_date,
+          to_date: this.to_date,
+          assign: this.assign ? this.assign.map(data => data.value) : null
+        })
+        if (store.status) {
+          this.$bvToast.toast(`New task has been created`, {
+            title: `Info!`,
+            toaster: 'b-toaster-bottom-right',
+            solid: true,
+            variant: 'primary',
+            appendToast: true
+          })
+          this.$nextTick(() => {
+            this.$bvModal.hide('create-task')
+          })
+        }
+      } catch (error) {
+        throw error
+      }
+    },
+    getFirstChar(text) {
+      return text.split('')[0].toUpperCase()
     }
   }
 }

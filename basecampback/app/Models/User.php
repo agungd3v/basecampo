@@ -46,4 +46,12 @@ class User extends Authenticatable
     public function company() {
       return $this->belongsTo(Company::class, 'company_id');
     }
+
+    public function task() {
+      return $this->hasMany(Task::class, 'created_by');
+    }
+
+    public function assign() {
+      return $this->belongsToMany(Task::class, 'task_assign', 'assign_to', 'task_id')->withTimestamps();
+    }
 }
