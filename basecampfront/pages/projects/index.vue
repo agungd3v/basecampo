@@ -111,11 +111,41 @@
                   <div
                     v-for="item in iceboxs"
                     :key="item.id"
-                    class="mt-1 mb-2"
+                    class="mt-1 mb-2 position-relative"
                   >
-                    <b-card :title="item.title" class="cursor-pointer">
+                    <div class="info-task-tag">
+                      <div
+                        v-if="item.tags"
+                        class="d-flex align-items-center"
+                        style="gap: 3px"
+                      >
+                        <b-badge
+                          v-for="(tag, idx) in item.tags"
+                          :key="idx"
+                          :variant="tag.variant"
+                          class="px-2"
+                        >
+                          {{ tag.name }}
+                        </b-badge>
+                      </div>
+                    </div>
+                    <b-card
+                      :title="item.title"
+                      class="cursor-pointer"
+                      :class="item.tags.length > 0 ? 'pt-3' : ''"
+                    >
+                      <div
+                        v-if="item.to_date"
+                        class="mt-2"
+                      >
+                        <div class="info-task-date">
+                          <div class="info-task-day">{{ getTaskDate(item.to_date, 'day') }}</div>
+                          <p class="my-1 mb-0">{{ getTaskDate(item.to_date, 'date') }}</p>
+                        </div>
+                      </div>
                       <div
                         v-if="item.assign.length > 0"
+                        class="mt-1"
                       >
                         <div class="d-flex align-items-center" style="gap: 3px">
                           <b-avatar
@@ -128,19 +158,6 @@
                             size="1.5rem"
                           ></b-avatar>
                         </div>
-                      </div>
-                      <div
-                        v-if="item.tags"
-                        class="d-flex align-items-center"
-                        style="gap: 3px"
-                      >
-                        <b-badge
-                          v-for="(tag, idx) in item.tags"
-                          :key="idx"
-                          :variant="tag.class"
-                        >
-                          {{ tag.name }}
-                        </b-badge>
                       </div>
                     </b-card>
                   </div>
@@ -173,11 +190,41 @@
                   <div
                     v-for="item in backlogs"
                     :key="item.id"
-                    class="mt-1 mb-2"
+                    class="mt-1 mb-2 position-relative"
                   >
-                    <b-card :title="item.title" class="cursor-pointer">
+                    <div class="info-task-tag">
+                      <div
+                        v-if="item.tags"
+                        class="d-flex align-items-center"
+                        style="gap: 3px"
+                      >
+                        <b-badge
+                          v-for="(tag, idx) in item.tags"
+                          :key="idx"
+                          :variant="tag.variant"
+                          class="px-2"
+                        >
+                          {{ tag.name }}
+                        </b-badge>
+                      </div>
+                    </div>
+                    <b-card
+                      :title="item.title"
+                      class="cursor-pointer"
+                      :class="item.tags.length > 0 ? 'pt-3' : ''"
+                    >
+                      <div
+                        v-if="item.to_date"
+                        class="mt-2"
+                      >
+                        <div class="info-task-date">
+                          <div class="info-task-day">{{ getTaskDate(item.to_date, 'day') }}</div>
+                          <p class="my-1 mb-0">{{ getTaskDate(item.to_date, 'date') }}</p>
+                        </div>
+                      </div>
                       <div
                         v-if="item.assign.length > 0"
+                        class="mt-1"
                       >
                         <div class="d-flex align-items-center" style="gap: 3px">
                           <b-avatar
@@ -190,19 +237,6 @@
                             size="1.5rem"
                           ></b-avatar>
                         </div>
-                      </div>
-                      <div
-                        v-if="item.tags"
-                        class="d-flex align-items-center"
-                        style="gap: 3px"
-                      >
-                        <b-badge
-                          v-for="(tag, idx) in item.tags"
-                          :key="idx"
-                          :variant="tag.class"
-                        >
-                          {{ tag.name }}
-                        </b-badge>
                       </div>
                     </b-card>
                   </div>
@@ -235,11 +269,41 @@
                   <div
                     v-for="item in progress"
                     :key="item.id"
-                    class="mt-1 mb-2"
+                    class="mt-1 mb-2 position-relative"
                   >
-                    <b-card :title="item.title" class="cursor-pointer">
+                    <div class="info-task-tag">
+                      <div
+                        v-if="item.tags"
+                        class="d-flex align-items-center"
+                        style="gap: 3px"
+                      >
+                        <b-badge
+                          v-for="(tag, idx) in item.tags"
+                          :key="idx"
+                          :variant="tag.variant"
+                          class="px-2"
+                        >
+                          {{ tag.name }}
+                        </b-badge>
+                      </div>
+                    </div>
+                    <b-card
+                      :title="item.title"
+                      class="cursor-pointer"
+                      :class="item.tags.length > 0 ? 'pt-3' : ''"
+                    >
+                      <div
+                        v-if="item.to_date"
+                        class="mt-2"
+                      >
+                        <div class="info-task-date">
+                          <div class="info-task-day">{{ getTaskDate(item.to_date, 'day') }}</div>
+                          <p class="my-1 mb-0">{{ getTaskDate(item.to_date, 'date') }}</p>
+                        </div>
+                      </div>
                       <div
                         v-if="item.assign.length > 0"
+                        class="mt-1"
                       >
                         <div class="d-flex align-items-center" style="gap: 3px">
                           <b-avatar
@@ -252,19 +316,6 @@
                             size="1.5rem"
                           ></b-avatar>
                         </div>
-                      </div>
-                      <div
-                        v-if="item.tags"
-                        class="d-flex align-items-center"
-                        style="gap: 3px"
-                      >
-                        <b-badge
-                          v-for="(tag, idx) in item.tags"
-                          :key="idx"
-                          :variant="tag.class"
-                        >
-                          {{ tag.name }}
-                        </b-badge>
                       </div>
                     </b-card>
                   </div>
@@ -297,11 +348,41 @@
                   <div
                     v-for="item in riviews"
                     :key="item.id"
-                    class="mt-1 mb-2"
+                    class="mt-1 mb-2 position-relative"
                   >
-                    <b-card :title="item.title" class="cursor-pointer">
+                    <div class="info-task-tag">
+                      <div
+                        v-if="item.tags"
+                        class="d-flex align-items-center"
+                        style="gap: 3px"
+                      >
+                        <b-badge
+                          v-for="(tag, idx) in item.tags"
+                          :key="idx"
+                          :variant="tag.variant"
+                          class="px-2"
+                        >
+                          {{ tag.name }}
+                        </b-badge>
+                      </div>
+                    </div>
+                    <b-card
+                      :title="item.title"
+                      class="cursor-pointer"
+                      :class="item.tags.length > 0 ? 'pt-3' : ''"
+                    >
+                      <div
+                        v-if="item.to_date"
+                        class="mt-2"
+                      >
+                        <div class="info-task-date">
+                          <div class="info-task-day">{{ getTaskDate(item.to_date, 'day') }}</div>
+                          <p class="my-1 mb-0">{{ getTaskDate(item.to_date, 'date') }}</p>
+                        </div>
+                      </div>
                       <div
                         v-if="item.assign.length > 0"
+                        class="mt-1"
                       >
                         <div class="d-flex align-items-center" style="gap: 3px">
                           <b-avatar
@@ -314,19 +395,6 @@
                             size="1.5rem"
                           ></b-avatar>
                         </div>
-                      </div>
-                      <div
-                        v-if="item.tags"
-                        class="d-flex align-items-center"
-                        style="gap: 3px"
-                      >
-                        <b-badge
-                          v-for="(tag, idx) in item.tags"
-                          :key="idx"
-                          :variant="tag.class"
-                        >
-                          {{ tag.name }}
-                        </b-badge>
                       </div>
                     </b-card>
                   </div>
@@ -358,7 +426,10 @@
                     :key="item.id"
                     class="mt-1 mb-2"
                   >
-                    <b-card :title="item.title" class="cursor-pointer position-relative pl-3">
+                    <b-card
+                      :title="item.title"
+                      class="cursor-pointer position-relative pl-3"
+                    >
                       <div class="mark-complete">
                         <b-icon
                           icon="check-square-fill"
@@ -367,7 +438,17 @@
                         ></b-icon>
                       </div>
                       <div
+                        v-if="item.to_date"
+                        class="mt-2"
+                      >
+                        <div class="info-task-date">
+                          <div class="info-task-day">{{ getTaskDate(item.to_date, 'day') }}</div>
+                          <p class="my-1 mb-0">{{ getTaskDate(item.to_date, 'date') }}</p>
+                        </div>
+                      </div>
+                      <div
                         v-if="item.assign.length > 0"
+                        class="mt-1"
                       >
                         <div class="d-flex align-items-center" style="gap: 3px">
                           <b-avatar
@@ -380,19 +461,6 @@
                             size="1.5rem"
                           ></b-avatar>
                         </div>
-                      </div>
-                      <div
-                        v-if="item.tags"
-                        class="d-flex align-items-center"
-                        style="gap: 3px"
-                      >
-                        <b-badge
-                          v-for="(tag, idx) in item.tags"
-                          :key="idx"
-                          :variant="tag.class"
-                        >
-                          {{ tag.name }}
-                        </b-badge>
                       </div>
                     </b-card>
                   </div>
