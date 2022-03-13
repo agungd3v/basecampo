@@ -32,11 +32,41 @@
                   <div
                     v-for="item in todos"
                     :key="item.id"
-                    class="mt-1 mb-2"
+                    class="mt-1 mb-2 position-relative"
                   >
-                    <b-card :title="item.title" class="cursor-pointer">
+                    <div class="info-task-tag">
+                      <div
+                        v-if="item.tags"
+                        class="d-flex align-items-center"
+                        style="gap: 3px"
+                      >
+                        <b-badge
+                          v-for="(tag, idx) in item.tags"
+                          :key="idx"
+                          :variant="tag.variant"
+                          class="px-2"
+                        >
+                          {{ tag.name }}
+                        </b-badge>
+                      </div>
+                    </div>
+                    <b-card
+                      :title="item.title"
+                      class="cursor-pointer"
+                      :class="item.tags.length > 0 ? 'pt-3' : ''"
+                    >
+                      <div
+                        v-if="item.to_date"
+                        class="mt-2"
+                      >
+                        <div class="info-task-date">
+                          <div class="info-task-day">{{ getTaskDate(item.to_date, 'day') }}</div>
+                          <p class="my-1 mb-0">{{ getTaskDate(item.to_date, 'date') }}</p>
+                        </div>
+                      </div>
                       <div
                         v-if="item.assign.length > 0"
+                        class="mt-1"
                       >
                         <div class="d-flex align-items-center" style="gap: 3px">
                           <b-avatar
@@ -49,19 +79,6 @@
                             size="1.5rem"
                           ></b-avatar>
                         </div>
-                      </div>
-                      <div
-                        v-if="item.tags"
-                        class="d-flex align-items-center"
-                        style="gap: 3px"
-                      >
-                        <b-badge
-                          v-for="(tag, idx) in item.tags"
-                          :key="idx"
-                          :variant="tag.class"
-                        >
-                          {{ tag.name }}
-                        </b-badge>
                       </div>
                     </b-card>
                   </div>
@@ -449,10 +466,7 @@
           <v-select
             multiple
             placeholder="Tags"
-            :options="[
-              {value: '1', text: 'Bug'},
-              {value: '2', text: 'Priority'}
-            ]"
+            :options="tag_list"
             label="text"
             v-model="tags"
           ></v-select>
@@ -509,6 +523,7 @@ export default {
       to_date: null,
 
       assign_list: [],
+      tag_list: [],
 
       todos: [],
       iceboxs: [],
@@ -527,6 +542,7 @@ export default {
   mounted() {
     this.getTask()
     this.getUserInDivision()
+    this.getTags()
   },
   methods: {
     async getTask() {
@@ -561,6 +577,21 @@ export default {
         throw error
       }
     },
+    async getTags() {
+      try {
+        const fetch = await this.$axios.$get('/v1/task/tags')
+        if (fetch.status) {
+          this.tag_list = fetch.data.map(data => {
+            return {
+              text: data.name,
+              value: data.id
+            }
+          })
+        }
+      } catch (error) {
+        throw error
+      }
+    },
     checkFormValidity() {
       const valid = this.$refs.form.checkValidity()
       this.titleState = valid
@@ -583,7 +614,8 @@ export default {
           title: this.title,
           from_date: this.from_date,
           to_date: this.to_date,
-          assign: this.assign ? this.assign.map(data => data.value) : null
+          assign: this.assign ? this.assign.map(data => data.value) : null,
+          tags: this.tags ? this.tags.map(data => data.value) : null
         })
         if (store.status) {
           this.$bvToast.toast(`New task has been created`, {
@@ -603,6 +635,14 @@ export default {
     },
     getFirstChar(text) {
       return text.split('')[0].toUpperCase()
+    },
+    getTaskDate(text, type) {
+      const day = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+      if (type == 'date') return text.split('-')[2].toString()
+      if (type == 'day') {
+        const date = new Date(text).getDay()
+        return day[date]
+      }
     },
     async moveTodo(data) {
       if (data.added) {
@@ -736,6 +776,7 @@ export default {
 <style>
   .card-title {
     font-size: 14px;
+    margin-bottom: 3px;
   }
   .card-item {
     min-width: 300px;

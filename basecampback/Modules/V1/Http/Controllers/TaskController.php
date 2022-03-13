@@ -2,6 +2,7 @@
 
 namespace Modules\V1\Http\Controllers;
 
+use App\Models\Tag;
 use App\Models\Task;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
@@ -22,7 +23,7 @@ class TaskController extends Controller
 
   public function getTask() {
     try {
-      $this->setData(Task::with('assign')->get());
+      $this->setData(Task::with('assign', 'tags')->get());
       return $this->success();
     } catch (\Exception $e) {
       $this->setMessage($e->getMessage());
@@ -45,6 +46,9 @@ class TaskController extends Controller
       if ($request->assign) {
         $task->assign()->attach($request->assign);
       }
+      if ($request->tags) {
+        $task->tags()->attach($request->tags);
+      }
 
       DB::commit();
       $this->setData($task);
@@ -61,6 +65,17 @@ class TaskController extends Controller
     try {
       $data = $this->repository->getUserIsSameDivison($request->division_id);
       $this->setData($data);
+      return $this->success();
+    } catch (\Exception $e) {
+      $this->setMessage($e->getMessage());
+      return $this->error();
+    }
+  }
+
+  public function getTags() {
+    try {
+      $tag = Tag::orderBy('name', 'asc')->get();
+      $this->setData($tag);
       return $this->success();
     } catch (\Exception $e) {
       $this->setMessage($e->getMessage());

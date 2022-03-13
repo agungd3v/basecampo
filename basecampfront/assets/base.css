@@ -161,3 +161,29 @@ body {
   top: 12px;
   left: 10px;
 }
+
+.info-task-date {
+  display: inline-block;
+  width: 35px;
+  font-size: 10px;
+  text-align: center;
+  border-radius: 4px;
+  overflow: hidden;
+  color: rgb(56, 97, 251) !important;
+  font-weight: 700;
+  background-color: rgb(240, 246, 255) !important;
+}
+
+.info-task-day {
+  background-color: rgb(56, 97, 251) !important;
+  color: #fff;
+  font-weight: 700;
+}
+
+.info-task-tag {
+  position: absolute;
+  z-index: 2;
+  left: 20px;
+  top: 15px;
+  font-size: 12px;
+}
