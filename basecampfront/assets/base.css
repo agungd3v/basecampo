@@ -187,3 +187,9 @@ body {
   top: 15px;
   font-size: 12px;
 }
+
+.vs__selected {
+  align-items: center !important;
+  gap: 3px;
+  padding: 5px !important;
+}

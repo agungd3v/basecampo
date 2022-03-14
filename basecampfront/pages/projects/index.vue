@@ -33,6 +33,7 @@
                     v-for="item in todos"
                     :key="item.id"
                     class="mt-1 mb-2 position-relative"
+                    @click="openTask(item)"
                   >
                     <div class="info-task-tag">
                       <div
@@ -494,7 +495,29 @@
             :options="assign_list"
             label="text"
             v-model="assign"
-          ></v-select>
+          >
+            <template
+              #selected-option-container="{ option }"
+            >
+              <div class="vs__selected">
+                <b-avatar
+                  variant="primary"
+                  :text="getFirstChar(option.text)"
+                  size="1.4rem"
+                ></b-avatar>
+                <span>{{ option.text }}</span>
+                <button
+                  type="button"
+                  class="vs__deselect"
+                  @click="deselectAssign(option)"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10">
+                    <path d="M6.895455 5l2.842897-2.842898c.348864-.348863.348864-.914488 0-1.263636L9.106534.261648c-.348864-.348864-.914489-.348864-1.263636 0L5 3.104545 2.157102.261648c-.348863-.348864-.914488-.348864-1.263636 0L.261648.893466c-.348864.348864-.348864.914489 0 1.263636L3.104545 5 .261648 7.842898c-.348864.348863-.348864.914488 0 1.263636l.631818.631818c.348864.348864.914773.348864 1.263636 0L5 6.895455l2.842898 2.842897c.348863.348864.914772.348864 1.263636 0l.631818-.631818c.348864-.348864.348864-.914489 0-1.263636L6.895455 5z"></path>
+                  </svg>
+                </button>
+              </div>
+            </template>
+          </v-select>
         </b-form-group>
         <b-form-group
           invalid-feedback="Title is required"
@@ -568,14 +591,17 @@
         </b-form-group>
       </form>
     </b-modal>
+    <view-task :open.sync="viewTask" :view-data="viewTaskData" @hide-view="hideView" />
   </b-container>
 </template>
 <script>
 import draggable from 'vuedraggable'
 import { mapGetters } from 'vuex'
+import ViewTask from '@/components/Task/ViewTask.vue'
 export default {
   components: {
     draggable,
+    ViewTask
   },
   middleware: 'auth',
   data() {
@@ -592,6 +618,8 @@ export default {
 
       assign_list: [],
       tag_list: [],
+      viewTask: false,
+      viewTaskData: null,
 
       todos: [],
       iceboxs: [],
@@ -837,6 +865,16 @@ export default {
           throw error
         }
       }
+    },
+    deselectAssign(item) {
+      this.assign = this.assign.filter(data => data.value != item.value)
+    },
+    openTask(data) {
+      this.viewTaskData = data
+      this.viewTask = !this.viewTask
+    },
+    hideView(bool) {
+      this.viewTask = bool
     }
   }
 }
