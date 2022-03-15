@@ -9,12 +9,8 @@ export default function ({ app, $axios, redirect, store }) {
   })
 
   $axios.onError(error => {
-    if(typeof error.response != 'undefined'){
-      if(typeof error.response.status != 'undefined'){
-        if(error.response.status === 500) {
-          return error.response.status
-        }
-      }
+    if (error.response.data.code == 500) {
+      return error.response
     }
   })
 }

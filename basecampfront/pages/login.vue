@@ -17,7 +17,7 @@
 </template>
 <script>
 export default {
-  middleware: ['hasauth'],
+  middleware: 'hasauth',
   data() {
     return {
       email: null,
@@ -36,6 +36,13 @@ export default {
           this.$store.dispatch('setToken', fetch.data.token)
           return window.location.href = '/projects'
         }
+        this.$bvToast.toast(`${fetch.message}`, {
+          title: `Warning`,
+          toaster: 'b-toaster-bottom-right',
+          solid: true,
+          variant: 'danger',
+          appendToast: true
+        })
       } catch (error) {
         throw error
       }
