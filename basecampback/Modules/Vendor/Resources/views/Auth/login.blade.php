@@ -34,7 +34,7 @@
           </form>
           <div class="text-center mt-5 text-lg fs-4">
             <p class="text-gray-600 mb-0">Don't have an account?
-              <a href="auth-register.html" class="font-bold">Sign up</a>.
+              <a href="{{ route('vendor.register') }}" class="font-bold">Sign up</a>.
             </p>
           </div>
         </div>

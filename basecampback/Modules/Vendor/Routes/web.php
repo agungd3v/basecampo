@@ -36,6 +36,10 @@ Route::prefix('vendor')->group(function() {
       Route::post('', [VendorController::class, 'employeeStore'])->name('vendor.employee.store');
     });
 
+    Route::group(['prefix' => 'tasks'], function() {
+      Route::get('', [VendorController::class, 'task'])->name('vendor.task');
+    });
+
   });
   
   Route::get('register', [RegisterController::class, 'register'])->name('vendor.register');

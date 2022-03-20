@@ -198,4 +198,169 @@ class VendorController extends Controller
       return redirect()->back()->withErrors($e->getMessage());
     }
   }
+
+  public function task(Request $request, Builder $builder) {
+    // $data = Company::with('division.task')->get();
+    // dd($data);
+    if(request()->ajax()) {
+      return DataTables::of(Company::query()->with('division.task')->where('vendor_id', Auth::user()->id))->addColumn('division', function($row) {
+        $listDivision = '<div>';
+        foreach ($row->division->sortByDesc('task') as $key => $value) {
+          $task = count($value->task);
+          $todo = count($value->task->where('status', 1)) * $task / $task;
+          $iceBox = count($value->task->where('status', 2)) * $task / $task;
+          $backLog = count($value->task->where('status', 3)) * $task / $task;
+          $onProgress = count($value->task->where('status', 4)) * $task / $task;
+          $riview = count($value->task->where('status', 5)) * $task / $task;
+          $complete = count($value->task->where('status', 6)) * $task / $task;
+          $todoAnimateWidth = $todo < 3 ? 3 : $todo;
+          $iceBoxAnimateWidth = $iceBox < 3 ? 3 : $iceBox;
+          $backLogAnimateWidth = $backLog < 3 ? 3 : $backLog;
+          $onProgressAnimateWidth = $onProgress < 3 ? 3 : $onProgress;
+          $riviewAnimateWidth = $riview < 3 ? 3 : $riview;
+          $completeAnimateWidth = $complete < 3 ? 3 : $complete;
+          $listDivision .= '
+            <div class="mt-1">
+              <span class="btn btn-dark btn-sm position-relative">
+                '. $value->name .' Division
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                  '. $task .'
+                  <span class="visually-hidden">unread messages</span>
+                </span>
+              </span>
+            </div>
+            <div class="">
+              <div class="text-end">
+                <span class="badge rounded-pill bg-primary" style="font-size: 10px">Todo</span>
+              </div>
+              <div class="progress mt-1">
+                <div
+                  class="progress-bar progress-bar-striped bg-info progress-bar-animated"
+                  role="progressbar"
+                  aria-valuenow="'. $todoAnimateWidth .'"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                  style="width: '. $todoAnimateWidth .'%; font-size: 10px"
+                >
+                  '. $todo .'%
+                </div>
+              </div>
+            </div>
+            <div class="">
+              <div class="text-end">
+                <span class="badge rounded-pill bg-primary" style="font-size: 10px">Icebox</span>
+              </div>
+              <div class="progress mt-1">
+                <div
+                  class="progress-bar progress-bar-striped bg-info progress-bar-animated"
+                  role="progressbar"
+                  aria-valuenow="'. $iceBoxAnimateWidth .'"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                  style="width: '. $iceBoxAnimateWidth .'%"
+                >
+                  '. $iceBox .'%
+                </div>
+              </div>
+            </div>
+            <div class="">
+              <div class="text-end">
+                <span class="badge rounded-pill bg-primary" style="font-size: 10px">Backlog</span>
+              </div>
+              <div class="progress mt-1">
+                <div
+                  class="progress-bar progress-bar-striped bg-info progress-bar-animated"
+                  role="progressbar"
+                  aria-valuenow="'. $backLogAnimateWidth .'"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                  style="width: '. $backLogAnimateWidth .'%"
+                >
+                  '. $backLog .'%
+                </div>
+              </div>
+            </div>
+            <div class="">
+              <div class="text-end">
+                <span class="badge rounded-pill bg-primary" style="font-size: 10px">On Progress</span>
+              </div>
+              <div class="progress mt-1">
+                <div
+                  class="progress-bar progress-bar-striped bg-info progress-bar-animated"
+                  role="progressbar"
+                  aria-valuenow="'. $onProgressAnimateWidth .'"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                  style="width: '. $onProgressAnimateWidth .'%"
+                >
+                  '. $onProgress .'%
+                </div>
+              </div>
+            </div>
+            <div class="">
+              <div class="text-end">
+                <span class="badge rounded-pill bg-primary" style="font-size: 10px">Riview</span>
+              </div>
+              <div class="progress mt-1">
+                <div
+                  class="progress-bar progress-bar-striped bg-info progress-bar-animated"
+                  role="progressbar"
+                  aria-valuenow="'. $riviewAnimateWidth .'"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                  style="width: '. $riviewAnimateWidth .'%"
+                >
+                  '. $riview .'%
+                </div>
+              </div>
+            </div>
+            <div class="">
+              <div class="text-end">
+                <span class="badge rounded-pill bg-primary" style="font-size: 10px">Complete</span>
+              </div>
+              <div class="progress mt-1">
+                <div
+                  class="progress-bar progress-bar-striped bg-info progress-bar-animated"
+                  role="progressbar"
+                  aria-valuenow="'. $completeAnimateWidth .'"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                  style="width: '. $completeAnimateWidth .'%"
+                >
+                  '. $complete .'%
+                </div>
+              </div>
+            </div>
+          ';
+        }
+        return $listDivision . '</div>';
+        return 'ok';
+      })->editColumn('name', function($row) {
+        return '<div class="text-nowrap" style="width: 160px">'. $row->name .'</div>';
+      })->rawColumns([
+        'division', 'name'
+      ])->addIndexColumn()->setTotalRecords(8)->toJson();
+    }
+
+    $html = $builder->columns([
+      [
+        'defaultContent' => '',
+        'data'           => 'DT_RowIndex',
+        'name'           => 'DT_RowIndex',
+        'title'          => 'No.',
+        'render'         => null,
+        'orderable'      => false,
+        'searchable'     => false,
+        'exportable'     => false,
+        'printable'      => true,
+        'className'      => 'align-top',
+      ],
+      ['data' => 'name', 'name' => 'name', 'title' => 'Name', 'className' => 'align-top pe-3'],
+      ['data' => 'division', 'name' => 'division', 'title' => 'Division', 'orderable' => false, 'searchable' => false, 'className' => 'w-100'],
+    ])->parameters([
+      'dom'   => 'Bfrtip',
+    ]);
+
+    return view('vendor::task.index', compact('html'));
+  }
 }

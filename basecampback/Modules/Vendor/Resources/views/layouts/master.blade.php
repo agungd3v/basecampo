@@ -56,6 +56,12 @@
                 <span>Employee</span>
               </a>
             </li>
+            <li class="sidebar-item @yield('tasks')">
+              <a href="{{ route('vendor.task') }}" class="sidebar-link">
+                <i class="bi bi-kanban-fill"></i>
+                <span>Tasks</span>
+              </a>
+            </li>
             <li class="sidebar-title">Raise Support</li>
             <li class="sidebar-item">
               <a href="{{ route('vendor.logout') }}" class='sidebar-link' onclick="event.preventDefault();document.getElementById('logout-form').submit()">

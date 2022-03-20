@@ -38,6 +38,7 @@ class TaskController extends Controller
       $task = new Task();
       $task->title = $request->title;
       $task->created_by = Auth::user()->id;
+      $task->division_id = Auth::user()->division->id;
       $task->from_date = $request->from_date ?? NULL;
       $task->to_date = $request->to_date ?? NULL;
       $task->description = $request->description ?? NULL;
