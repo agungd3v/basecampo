@@ -6,7 +6,7 @@
 }
 
 body {
-  background: #fff;
+  background: rgb(213, 241, 251);
 }
 
 .bg-main {
@@ -192,4 +192,8 @@ body {
   align-items: center !important;
   gap: 3px;
   padding: 5px !important;
+}
+
+.text-sm {
+  font-size: 14px;
 }
